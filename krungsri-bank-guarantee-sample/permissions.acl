@@ -1,0 +1,82 @@
+rule NetworkAdminUser {
+    description: "Grant business network administrators full access to user resources"
+    participant: "org.hyperledger.composer.system.NetworkAdmin"
+    operation: ALL
+    resource: "**"
+    action: ALLOW
+}
+
+rule NetworkAdminSystem {
+    description: "Grant business network administrators full access to system resources"
+    participant: "org.hyperledger.composer.system.NetworkAdmin"
+    operation: ALL
+    resource: "org.hyperledger.composer.system.**"
+    action: ALLOW
+}
+rule NetworkUserSystem {
+    description: "Grant user full access to system resources"
+    participant: "com.krungsri.bg.User"
+    operation: ALL
+    resource: "org.hyperledger.composer.system.**"
+    action: ALLOW
+}
+rule RequestorView{
+    description: "Grant Requestor full access to their resource"
+    participant(p): "com.krungsri.bg.User"
+    operation: ALL
+    resource(r): "com.krungsri.bg.BGdoc"
+  	condition: (r.Requestor.getIdentifier() == p.organization.getIdentifier())
+    action: ALLOW
+}
+
+rule BeneficiaryView{
+    description: "Grant Beneficiary full access to their resource"
+    participant(p): "com.krungsri.bg.User"
+    operation: ALL
+    resource(r): "com.krungsri.bg.BGdoc"
+  	condition: ((r.Beneficiary.getIdentifier() == p.organization.getIdentifier()) && (r.BGstatus == "Approved" || r.BGstatus == "Return"))
+    action: ALLOW
+}
+
+rule BankView{
+    description: "Grant Bank full access to their resource"
+    participant(p): "com.krungsri.bg.User"
+    operation: ALL
+    resource(r): "com.krungsri.bg.BGdoc"
+  	condition: ((r.Bank.getIdentifier() == p.organization.getIdentifier()) )
+    action: ALLOW
+}
+
+rule RequestBG{
+    description: "Grant Requestor full access to do request BG transaction"
+    participant(p): "com.krungsri.bg.User"
+    operation: ALL
+    resource(r): "com.krungsri.bg.RequestBGdoc"
+  	condition: ((r.Requestor.getIdentifier() == p.organization.getIdentifier()) )
+    action: ALLOW
+}
+rule ApproveBG{
+    description: "Grant Bank full access to do approce BG transaction"
+    participant(p): "com.krungsri.bg.User"
+    operation: ALL
+    resource(r): "com.krungsri.bg.ApproveBGRequest"
+  	condition: ((r.Bank.getIdentifier() == p.organization.getIdentifier()) )
+    action: ALLOW
+}
+rule RejectBG{
+    description: "Grant Bank full access to do reject BG transaction"
+    participant(p): "com.krungsri.bg.User"
+    operation: ALL
+    resource(r): "com.krungsri.bg.RejectBGRequest"
+  	condition: ((r.Bank.getIdentifier() == p.organization.getIdentifier()) )
+    action: ALLOW
+}
+
+rule ReturnBG{
+    description: "Grant Beneficiary full access to do return BG transaction"
+    participant(p): "com.krungsri.bg.User"
+    operation: ALL
+    resource(r): "com.krungsri.bg.ReturnBG"
+  	condition: ((r.Beneficiary.getIdentifier() == p.organization.getIdentifier()) )
+    action: ALLOW
+}
